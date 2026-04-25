@@ -67,25 +67,25 @@ func (s ParcelService) PrintClientParcels(client int) error {
 	return nil
 }
 
-func (s ParcelService) NewStatus(number int) error {
+func (s ParcelService) NextStatus(number int) error {
 	parcel, err := s.store.Get(number)
 	if err != nil {
 		return err
 	}
 
-	var newStatus string
+	var NextStatus string
 	switch parcel.Status {
 	case ParcelStatusRegistered:
-		newStatus = ParcelStatusSent
+		NextStatus = ParcelStatusSent
 	case ParcelStatusSent:
-		newStatus = ParcelStatusDelivered
+		NextStatus = ParcelStatusDelivered
 	case ParcelStatusDelivered:
 		return nil
 	}
 
-	fmt.Printf("У посылки № %d новый статус: %s\n", number, newStatus)
+	fmt.Printf("У посылки № %d новый статус: %s\n", number, NextStatus)
 
-	return s.store.SetStatus(number, newStatus)
+	return s.store.SetStatus(number, NextStatus)
 }
 
 func (s ParcelService) ChangeAddress(number int, address string) error {
@@ -126,7 +126,7 @@ func main() {
 	}
 
 	// изменение статуса
-	err = service.NewStatus(p.Number)
+	err = service.NextStatus(p.Number)
 	if err != nil {
 		fmt.Println(err)
 		return
